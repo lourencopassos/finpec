@@ -76,9 +76,9 @@ export const Details = ({ id }: DetailsProps) => {
       {simulations && cprf && (
         <div>
           <h2>Simulações</h2>
-          <Profit profit={ipcaBulletProfit} title="IPCA Bullet" />
-          <Profit profit={bulletProfit} title="Bullet" />
-          <Profit profit={cupomProfit} title="Cupom" />
+          <Profit profit={formatMoney(ipcaBulletProfit)} title="IPCA Bullet" />
+          <Profit profit={formatMoney(bulletProfit)} title="Bullet" />
+          <Profit profit={formatMoney(cupomProfit)} title="Cupom" />
         </div>
       )}
     </S.Container>

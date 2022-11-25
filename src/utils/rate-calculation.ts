@@ -15,7 +15,7 @@ export const calculateCurrentProfit = (
   const daysInAYear = 365;
   const calculatedRate =
     ((rate * 0.01) / daysInAYear) * dayDifference * initialAmount;
-  return formatMoney(calculatedRate);
+  return calculatedRate;
 };
 
 export const getDaysDifference = (signedDate: string) => {
@@ -23,4 +23,13 @@ export const getDaysDifference = (signedDate: string) => {
   const dateOfSignature = new Date(signedDate);
   const dayDifference = Math.abs(today.getTime() - dateOfSignature.getTime());
   return Math.ceil(dayDifference / (MILLISECONDS * SECONDS * MINUTES * HOURS));
+};
+
+export const calculateCurrentValue = (
+  signedDate: string,
+  rate: number,
+  initialAmount: number
+) => {
+  const profit = calculateCurrentProfit(signedDate, rate, initialAmount);
+  return profit + initialAmount;
 };
