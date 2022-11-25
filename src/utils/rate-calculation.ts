@@ -1,5 +1,3 @@
-import { formatMoney } from "./string-manipulation";
-
 // constants
 const MILLISECONDS = 1000;
 const SECONDS = 60;
@@ -13,8 +11,7 @@ export const calculateCurrentProfit = (
 ) => {
   const dayDifference = getDaysDifference(signedDate);
   const daysInAYear = 365;
-  const calculatedRate =
-    ((rate * 0.01) / daysInAYear) * dayDifference * initialAmount;
+  const calculatedRate = (rate / daysInAYear) * dayDifference * initialAmount;
   return calculatedRate;
 };
 
