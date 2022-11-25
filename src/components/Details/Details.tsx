@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { fetchSimulations } from "../../api/api";
 import { CPRF, CPRFStatus, Simulation } from "../../api/api.types";
 import { AppContext } from "../../context";
-import { calculateCurrentProfit } from "../../utils/hooks/rate-calculation";
+import { calculateCurrentProfit } from "../../utils/rate-calculation";
 import {
   capitalize,
   formatDate,

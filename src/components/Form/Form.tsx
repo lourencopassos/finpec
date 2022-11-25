@@ -1,5 +1,10 @@
-import React, { useContext, useState } from "react";
-import { CPRF, CPRFType, CPRF_TYPE_OPTIONS } from "../../api/api.types";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  CPRF,
+  CPRFType,
+  CPRF_TYPE_OPTIONS,
+  Simulation,
+} from "../../api/api.types";
 import * as S from "./Form.styles";
 
 import DatePicker from "react-datepicker";
@@ -9,6 +14,8 @@ import { AppContext } from "../../context";
 import { ActionTypes } from "../../context/reducer";
 import { v4 as generateUUID } from "uuid";
 import { addOneYear } from "../../utils/string-manipulation";
+import { fetchSimulations } from "../../api/api";
+import { useDebounce } from "../../utils/hooks/useDebounce";
 
 interface FormProps {
   setShowModal: (setShowModal: boolean) => void;
@@ -20,6 +27,40 @@ export const Form = ({ setShowModal }: FormProps) => {
   const [type, setType] = useState(CPRF_TYPE_OPTIONS[0]);
   const [signedAmount, setSignedAmount] = useState<string>("");
   const [signedDate, setSignedDate] = useState(new Date());
+  const [simulations, setSimulations] = useState<Simulation | undefined>(
+    undefined
+  );
+
+  const debouncedValue = useDebounce(signedAmount);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const simulation = await fetchSimulations({
+        amount: Number(debouncedValue),
+        startDate: signedDate.toLocaleDateString("en-US"),
+      });
+      setSimulations(simulation);
+    };
+    if (signedAmount && signedDate && Number(signedAmount) >= 5000) {
+      fetchData();
+    }
+  }, [signedAmount, signedDate, debouncedValue]);
+
+  const getRate = () => {
+    const ipca_bullet = simulations?.ipca_bullet;
+    const ipca_cupom = simulations?.ipca_cupom;
+    const bullet = simulations?.bullet;
+
+    if (simulations) {
+      if (type === "Cupom") return ipca_cupom?.rate;
+      if (type === "IPCA Bullet") return ipca_bullet?.rate;
+      return bullet?.rate;
+    }
+    return;
+  };
+
+  const rate = getRate();
+  const hasRate = !!rate;
 
   const handleSaveCprf = () => {
     const cprf: CPRF = {
@@ -27,7 +68,7 @@ export const Form = ({ setShowModal }: FormProps) => {
       initialAmount: Number(signedAmount),
       signedDate: signedDate.toString(),
       id: generateUUID(),
-      rate: 0.15,
+      rate: (rate as number) / 100,
       autoClosingDate: addOneYear(signedDate).toString(),
       status: "ativa",
     };
@@ -44,7 +85,7 @@ export const Form = ({ setShowModal }: FormProps) => {
         <S.Label htmlFor="type">Tipo</S.Label>
         <select name="type" id="type" onChange={(e) => setType(e.target.value)}>
           {CPRF_TYPE_OPTIONS.map((type: string) => (
-            <option>{type}</option>
+            <option key={type}>{type}</option>
           ))}
         </select>
       </S.ItemContainer>
@@ -67,7 +108,14 @@ export const Form = ({ setShowModal }: FormProps) => {
           onChange={(date: Date) => setSignedDate(date)}
         />
       </S.ItemContainer>
-      <button onClick={handleSaveCprf}>Salvar</button>
+      {rate && (
+        <S.ItemContainer>
+          <p>Taxa a ser aplicada: {rate}%</p>
+        </S.ItemContainer>
+      )}
+      <button onClick={handleSaveCprf} disabled={!hasRate}>
+        Salvar
+      </button>
     </S.Container>
   );
 };

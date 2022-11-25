@@ -1,4 +1,4 @@
-import { formatMoney } from "../string-manipulation";
+import { formatMoney } from "./string-manipulation";
 
 // constants
 const MILLISECONDS = 1000;
