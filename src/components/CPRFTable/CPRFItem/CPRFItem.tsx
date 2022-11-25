@@ -23,6 +23,7 @@ export const CPRFItem = ({
   closingDate,
   closingAmount,
   id,
+  autoClosingDate,
 }: CPRFItemProps) => {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -33,6 +34,7 @@ export const CPRFItem = ({
         <S.Item>{formatMoney(initialAmount)}</S.Item>
         <S.Item>{capitalize(status)}</S.Item>
         <S.Item>{formatDate(signedDate)}</S.Item>
+        <S.Item>{formatDate(autoClosingDate)}</S.Item>
         <S.Item>{formatRate(rate)} ao ano</S.Item>
         <S.Item>{formatDate(closingDate)}</S.Item>
         <S.Item>{formatMoney(closingAmount)}</S.Item>

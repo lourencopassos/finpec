@@ -9,6 +9,7 @@ export const CPRFTableHeader = () => {
       <CPRFTableHeaderItem title="Valor Inicial" label="initialAmount" />
       <CPRFTableHeaderItem title="Status" label="status" />
       <CPRFTableHeaderItem title="Data de Assinatura" label="signedDate" />
+      <CPRFTableHeaderItem title="Data de fechamento" label="autoClosingDate" />
       <CPRFTableHeaderItem title="Taxa" label="rate" />
       <CPRFTableHeaderItem title="Data de Vencimento" label="closingDate" />
       <CPRFTableHeaderItem title="Valor no Vencimento" label="closingAmount" />

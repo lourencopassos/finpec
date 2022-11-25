@@ -13,7 +13,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { AppContext } from "../../context";
 import { ActionTypes } from "../../context/reducer";
 import { v4 as generateUUID } from "uuid";
-import { addOneYear } from "../../utils/string-manipulation";
 import { fetchSimulations } from "../../api/api";
 import { useDebounce } from "../../utils/hooks/useDebounce";
 
@@ -59,6 +58,19 @@ export const Form = ({ setShowModal }: FormProps) => {
     return;
   };
 
+  const getEndDate = () => {
+    const ipca_bullet = simulations?.ipca_bullet;
+    const ipca_cupom = simulations?.ipca_cupom;
+    const bullet = simulations?.bullet;
+
+    if (simulations) {
+      if (type === "Cupom") return ipca_cupom?.endDate;
+      if (type === "IPCA Bullet") return ipca_bullet?.endDate;
+      return bullet?.endDate;
+    }
+    return;
+  };
+
   const rate = getRate();
   const hasRate = !!rate;
 
@@ -69,7 +81,7 @@ export const Form = ({ setShowModal }: FormProps) => {
       signedDate: signedDate.toString(),
       id: generateUUID(),
       rate: (rate as number) / 100,
-      autoClosingDate: addOneYear(signedDate).toString(),
+      autoClosingDate: getEndDate() || "",
       status: "ativa",
     };
 
